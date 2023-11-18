@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "plastic-identifier-hackman",
+  "private_key_id": "0ebe512f9575f540016ed0ef28b2ffd057731083",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCW3gC0XMBAwQO/\nBCdmbBoy9QP1yeke70EUVgF13hbqaRbF8RERgKBr9hvX0tn4IeZQ72ULkWU+UZo3\nhEg8R3f6pH5bkhznQf9TZEfDc4Lqoh27Cy326LmU0FYzzSToWwagix8fNtA7fDqd\n18vcLSdCAUzVruNQBZTRRKhc354o4v3hU8JFVEuo4hddpinN5YAo1St+QSEcs2pC\nZRsJtSApM1Ip04LtnErWaPjEsdj0Nt6MQ5sieEH8+CksILfT6ma5qFNds5rrBAMm\n5WkW8m4rRR//EqRHbLkKd3cokOb/anOkT3KAS5/l1++4tTFilb97zxFy/+Lr5JEc\nYV0lp+n/AgMBAAECggEABjO3LLL5a6VjqDPIA4kNz1V3kGBODJRXr7nUvTSK6vUK\nAiDQYPtRh6P/mLDq1AK0wKlZao8owytAnz1Ovjz5PN0L8sDAHm5TTD7S8mvVEHHn\nWKaeK53SmesHTYGGnboMPN0AmQcRqrhcgoZPXkxJkQg+UTSA1MEopoJfjNMxNyCu\n6JvtZrWRuMloqymeOVq9ukpquR6U9CGc0uuNUt1RQmHG2RiZaTwYAbSRHXBwmGA9\ne3DxLupJyVrLIWLfkZvoNANR9Fh7XayvwCyTcvn6N4Nc+RUvccZz9yPj070LdYkr\n02Zwb3jPfK6CwBzFpyWndqC9BXvYVpN4YnWMff5MJQKBgQDOgUe0J54qpfzjGZuN\nsNKm4umpptG2JzZJwsN95KCj+ecohHij9+5iHlr4X9qM0KIeSL+YqqlleHNs93qV\nZwYALHSQjp/Zkxd/QKr6+NsrobzPvQrUM2uQNWAe5rPbuQyLkNDcwFWFWM8BcF77\nPEELnN1iSBn01cNWYNoc9ooB7QKBgQC7Buby5UnD25eTtOn3IS27So/sHjpXlhUR\nf4Qyop6uGVARfcCe9q00hD70NwUwWOcpq9rcrey53obPqu7MJhazLVMe5jh568Ur\nDY0mNsmH6yyCcxPYmh6LnN5uSiyOnd4yZBP44U5NVwQjg4g68KmwBwX9EB18dzoU\ntyHOOCHOGwKBgDa95KEoQ3Bw0gnttuOntR/SVTjI5RzRZj3FaIdN/Rua2qFOBKEK\nz2GpRFpFJq1ffSpkBI5W51LjzE1diVxjlB6lqjzL4ioOKRNttCWVpJv7Yw76wQ0h\nmGkBDTsD0zfy5RV2TTfHsKQJt85c2IDnJyMJ8VHlZSQXKpISWJ+G52y9AoGBAIH1\nGtefEbHBzcK6THUHngJtnjJBEuM3i248QDz7GO368tMkoYsT92jtl90UuktNC1u+\nafc796l0AhMdQI+ky9M3ZHGtIYM+nCP9Z54tJb6HYMdIdXrmJOF4YGscqXd0JSi4\nt9QRotpE48BVrnzeK9sAFl4xK3wIUNiCJEBqarsPAoGBAMSCXMIyYkespNS368Q2\nSluttmmJLPuQ3f4gtYX3ebr+mPQX4j9KBm5/UEb1nt4rUtrL+I7yiq9JocTgQsIE\nviA5sE1hLqz5jwaoB+9I1XGHWVJ5VxIBmebu7mmi6P2Qw4WzyoPdBhEITq99qAQ/\n9MQm6UeDs6YP+UAmS+ALQpus\n-----END PRIVATE KEY-----\n",
+  "client_email": "jon-hackman@plastic-identifier-hackman.iam.gserviceaccount.com",
+  "client_id": "109349023124686101756",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/jon-hackman%40plastic-identifier-hackman.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

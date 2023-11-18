@@ -1,10 +1,74 @@
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Webcam Capture or Upload</title>
 </head>
 <body>
-    
+
+<h2>Select Image Upload Method</h2>
+<button onclick="enableWebcam()">Use Webcam</button>
+<button onclick="enableUpload()">Upload from Computer</button>
+
+<video id="webcam" autoplay playsinline width="640" height="480" style="display:none;"></video>
+<button id="capture" style="display:none;">Capture</button>
+<canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+
+<form id="uploadForm" method="post" action="/upload" enctype="multipart/form-data" style="display:none;">
+    <input type="file" name="file" accept="image/*">
+    <input type="submit" value="Upload Image">
+</form>
+
+<script>
+    const webcamElement = document.getElementById('webcam');
+    const canvasElement = document.getElementById('canvas');
+    const captureButton = document.getElementById('capture');
+    const uploadForm = document.getElementById('uploadForm');
+
+    const context = canvasElement.getContext('2d');
+    let videoTracks;
+
+    function enableWebcam() {
+        webcamElement.style.display = 'block';
+        captureButton.style.display = 'block';
+        uploadForm.style.display = 'none';
+        setupWebcam();
+    }
+
+    function enableUpload() {
+        webcamElement.style.display = 'none';
+        captureButton.style.display = 'none';
+        uploadForm.style.display = 'block';
+        if (videoTracks) {
+            videoTracks.forEach(track => track.stop());
+        }
+    }
+
+    captureButton.addEventListener('click', () => {
+        context.drawImage(webcamElement, 0, 0, canvasElement.width, canvasElement.height);
+        // Convert the canvas to blob and send it to the server
+        canvasElement.toBlob(uploadBlob);
+    });
+
+    async function uploadBlob(blob) {
+        let formData = new FormData();
+        formData.append('file', blob, 'webcam-image.png');
+
+        try {
+            let response = await fetch('/upload', {method: 'POST', body: formData})
+            .then (response => response.json())
+            .then (data => {window.location.href='/upload'});
+            console.log(result);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async function setupWebcam() {
+        const stream = await navigator.mediaDevices.getUserMedia({video: true});
+        webcamElement.srcObject = stream;
+        videoTracks = stream.getVideoTracks();
+    }
+</script>
+
 </body>
 </html>
