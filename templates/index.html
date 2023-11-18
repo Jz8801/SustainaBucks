@@ -6,15 +6,16 @@
 <body>
 
 <h2>Select Image Upload Method</h2>
-<button onclick="enableWebcam()">Use Webcam</button>
-<button onclick="enableUpload()">Upload from Computer</button>
+<button type="button" onclick="enableWebcam()">Use Webcam</button>
+<button type="button" onclick="enableUpload()">Upload from Computer</button>
 
 <video id="webcam" autoplay playsinline width="640" height="480" style="display:none;"></video>
-<button id="capture" style="display:none;">Capture</button>
+<button id="capture" style="display:none;" type="button">Capture</button>
 <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
 
 <form id="uploadForm" method="post" action="/upload" enctype="multipart/form-data" style="display:none;">
     <input type="file" name="file" accept="image/*">
+    <input type="hidden" name="imageData" id="imageData">
     <input type="submit" value="Upload Image">
 </form>
 
@@ -23,6 +24,7 @@
     const canvasElement = document.getElementById('canvas');
     const captureButton = document.getElementById('capture');
     const uploadForm = document.getElementById('uploadForm');
+    const imageDataInput = document.getElementById('imageData');
 
     const context = canvasElement.getContext('2d');
     let videoTracks;
@@ -45,23 +47,15 @@
 
     captureButton.addEventListener('click', () => {
         context.drawImage(webcamElement, 0, 0, canvasElement.width, canvasElement.height);
-        // Convert the canvas to blob and send it to the server
-        canvasElement.toBlob(uploadBlob);
+        canvasElement.toBlob(function(blob) {
+            var reader = new FileReader();
+            reader.onloadend = function() {
+                imageDataInput.value = reader.result;
+                uploadForm.submit();
+            }
+            reader.readAsDataURL(blob);
+        }, 'image/png');
     });
-
-    async function uploadBlob(blob) {
-        let formData = new FormData();
-        formData.append('file', blob, 'webcam-image.png');
-
-        try {
-            let response = await fetch('/upload', {method: 'POST', body: formData})
-            .then (response => response.json())
-            .then (data => {window.location.href='/upload'});
-            console.log(result);
-        } catch (e) {
-            console.error(e);
-        }
-    }
 
     async function setupWebcam() {
         const stream = await navigator.mediaDevices.getUserMedia({video: true});
