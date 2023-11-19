@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results</title>
+    <link rel="stylesheet" href="sb_main.css">
+    <link rel="javascript" href="sb_js.js">
+</head>
+<body>
+    <header>
+        <img src="images/sustainabuck%20logo.png" alt="SustainaBuck Logo" height="80">
+        <h2>SustainaBucks</h2>
+        <h3>where plastic meets paper</h3>
+    </header>
+    <nav id="nav_menu">
+        <ul>
+            <li><a href="sb_index.html">Home</a></li>
+            <li><a href="mapDirection.html">Map Directions</a></li>
+            <li><a href="uploadResults.html">Upload Results</a></li>
+        </ul>
+    </nav>
+    <h1>Recyclable Items Detected:</h1>
+        <ul>
+            {% for label in labels %}
+            <li>{{ label }}</li>
+            {% endfor %}
+        </ul>
+    <h1>Brands Detected:</h1>
+        <ul>
+            {% for logo in logos %}
+            <li>{{ logo }}</li>
+            {% endfor %}
+        </ul>
+    <form action="/">
+        <input type="submit" value="Back" />
+    </form>
+
+    <form action="/recycle">
+        <input type="submit" value="Recycle" />
+    </form>
+    <form action="/dispose">
+        <input type="submit" value="Dispose" />
+    </form>
+</body>
+</html>

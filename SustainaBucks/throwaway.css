@@ -1,0 +1,100 @@
+/* the styles for the elements */
+* {
+    margin: 0;
+    padding: 0;
+}
+html {
+    background-color: #cee6ee;
+}
+body {
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    background-color: #cee6ee;
+}
+a:focus, a:hover {
+    font-style: italic;
+}
+header {
+
+    width: 100%;
+    border-bottom: 3px solid #296e37;
+    background-image: -moz-linear-gradient(
+            30deg, #29416e 0%, #29416e 30%, #cee6ee 50%, #29416e 80%, #29416e 100%);
+    background-image: -webkit-linear-gradient(
+            30deg, #29416e 0%, #29416e 30%, #cee6ee 50%, #29416e 80%, #29416e 100%);
+    background-image: -o-linear-gradient(
+            30deg, #29416e 0%, #29416e 30%, #cee6ee 50%, #29416e 80%, #29416e 100%);
+    background-image: linear-gradient(
+            30deg, #29416e 0%, #29416e 30%, #cee6ee 50%, #29416e 80%, #29416e 100%);
+}
+header h2 {
+    font-size: 175%;
+    color: #639a6f;
+    padding: 0 30px;
+}
+header h3 {
+    font-size: 130%;
+    font-style: italic;
+    color: #639a6f;
+    padding: 0 30px;
+}
+header img {
+    float: center;
+
+}
+
+#nav_menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+#nav_menu ul li {
+    float: left;
+}
+#nav_menu ul li a {
+    display: block;
+    width: 160px;
+    text-align: center;
+    padding: 1em 0;
+    text-decoration: none;
+    background-color: #cee6ee;
+    color: #29416e;
+    font-weight: bold;
+}
+#nav_menu a.current {
+    color: #296e37;
+}
+#nav_menu ul ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+}
+#nav_menu ul ul li {
+    float: none;
+}
+#nav_menu ul li:hover > ul {
+    display: block;
+}
+#nav_menu > ul::after {
+    content: "";
+    clear: both;
+    display: block;
+}
+
+video, canvas, form {
+    margin-bottom: 20px;
+}
+
+div {
+    float: left;
+    padding: 0 30px;
+    height: 100px;
+
+}
