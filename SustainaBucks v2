@@ -1,0 +1,51 @@
+from flask import Flask, render_template, request, session, url_for, redirect, jsonify
+import json
+from google.cloud import vision
+import os
+import base64
+
+
+app = Flask(__name__)
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './Key.json'
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    client = vision.ImageAnnotatorClient()
+    image_data = request.form.get('imageData')
+    if image_data:
+        # Strip the header from the data URL
+        header, image_data = image_data.split(',', 1)
+        # Convert to bytes
+        image_bytes = base64.b64decode(image_data)
+        image = vision.Image(content=image_bytes)
+        response = client.label_detection(image=image)
+        labels = response.label_annotations
+
+        #List of words found in image
+        x = []
+        #Changes responce to get list of text annotations
+        response = client.text_detection(image=image)
+        for annotation in response.text_annotations:
+            vertices = [f"({v.x},{v.y})" for v in annotation.bounding_poly.vertices]
+            x.append(f"{repr(annotation.description):42}, {','.join(vertices)}")
+
+        y = []
+
+        response = client.object_localization(image=image)
+
+
+        whatISee = {'What_I_Think_It_Is':[label.description for label in labels],
+        'What_I_Think_It_Says': x}
+
+        return jsonify(whatISee)
+
+    else:
+        return 'No image data received.', 400
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
