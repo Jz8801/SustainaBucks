@@ -1,0 +1,223 @@
+from flask import Flask, render_template, request, session, redirect, jsonify
+from google.cloud import vision
+import requests
+import os
+import base64
+import re
+import pandas as pd
+
+app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Set a secret key for session handling
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './Key.json'
+client = vision.ImageAnnotatorClient()
+
+
+
+# Index route
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
+# Upload route
+@app.route('/upload', methods=['POST'])
+def upload():
+    image_data_webcam = request.form.get('imageData')
+    image_data_upload = request.files.get('file')
+
+    if image_data_webcam:
+        header, image_data = image_data_webcam.split(',', 1)
+        image_bytes = base64.b64decode(image_data)
+        image = vision.Image(content=image_bytes)
+    elif image_data_upload:
+        content = image_data_upload.read()
+        image = vision.Image(content=content)
+    else:
+        return 'No image data received.', 400
+
+    recyclable = ['plastic bottles','plastic', 'glass', 'metal', 'tin', 'aluminium', 'wood', 'paper', 'paperboard', 'textile','cans']
+    response_label = client.label_detection(image=image)
+    labels = response_label.label_annotations
+    material_labels = [label.description for label in labels if
+                       any(material in label.description.lower() for material in recyclable)]
+    if len(material_labels) == 0:
+        material_labels = ['No Recyclable Detected']
+    response_logo = client.logo_detection(image=image)
+    logos = response_logo.logo_annotations
+    results = {'labels': material_labels, 'logos': [logo.description for logo in logos]}
+
+    # Store labels in session
+    session['material_labels'] = material_labels
+
+    return render_template('uploadResults.html', labels=results['labels'], logos=results['logos'])
+
+
+# Recycle route
+@app.route('/recycle', methods=['GET'])
+def recycle():
+    # Function to build the payload for Google Custom Search
+    def build_payload(query, start=1, num=10, date_restrict='m1', **params):
+        payload = {
+            'key': 'AIzaSyBOFMdjxaL5J_LOhJQVg02hh7KpsGbogV4',
+            'q': query,
+            'cx': 'f3b22071cefd749a8',
+            'start': start,
+            'num': num,
+            'date_restrict': date_restrict
+        }
+        payload.update(params)
+        return payload
+
+    # Function to make requests to Google Custom Search
+    def make_request(payload):
+        response = requests.get('https://www.googleapis.com/customsearch/v1', params=payload)
+        if response.status_code != 200:
+            raise Exception('Request Failed')
+        return response.json()
+
+    # Function to clean filenames
+    def clean_filename(filename):
+        filename = re.sub(r'[\\/*?:"<>|]', "", filename)
+        return filename
+
+    # Function to execute the main logic of Google Custom Search
+    def main(query, result_total=10):
+        items = []
+        remainder = result_total % 10
+        pages = (result_total // 10) + (1 if remainder > 0 else 0)
+
+        for i in range(pages):
+            start_index = i * 10 + 1
+            num_results = remainder if pages == i + 1 and remainder > 0 else 10
+            payload = build_payload(query, start=start_index, num=num_results)
+
+            response = make_request(payload)
+            if 'items' in response:
+                items.extend(response['items'])
+
+        query_string_clean = clean_filename(query)
+        df = pd.json_normalize(items)
+        df.to_excel(f'Google_Search_Result_{query_string_clean}.xlsx', index=False)
+
+    material_labels = session.get('material_labels', [])
+    print(material_labels)
+    if material_labels != ['No Recyclable Detected']:
+        if __name__ == '__main__':
+            KEY = 'AIzaSyBOFMdjxaL5J_LOhJQVg02hh7KpsGbogV4'
+            SEARCH_ENGINE_ID = 'f3b22071cefd749a8'
+            search_query = 'How to recycle ' + ' '.join(material_labels)
+            total_results = 20
+            main(search_query, total_results)
+
+            df = pd.read_excel('Google_Search_Result_'+f'{search_query}'+'.xlsx')
+        if 'title' in df.columns:
+            # Extract the column values into a list
+            titles_t = df['title'].tolist()
+
+        if 'link' in df.columns:
+            # Extract the column values into a list
+            titles_l = df['link'].tolist()
+
+        if 'title' in df.columns and 'link' in df.columns:
+            title_link_df = df[['title', 'link']]
+            title_link_df['title'] = title_link_df['title'].str.lower()  # Convert titles to lowercase
+            title_link_df = title_link_df[title_link_df['title'].str.contains('|'.join(material_labels).lower())]
+
+        titles = title_link_df['title'].tolist()
+        links = title_link_df['link'].tolist()
+
+        return (titles, "\n", links)
+
+
+    else:
+        return 'The object you displayed is either unable to be recycled, or cannot be recognized due to image quality'
+
+
+# Dispose route
+@app.route('/dispose', methods=['GET'])
+def dispose():
+
+    def build_payload(query, start=1, num=10, date_restrict='m1', **params):
+        payload = {
+            'key': 'AIzaSyBOFMdjxaL5J_LOhJQVg02hh7KpsGbogV4',
+            'q': query,
+            'cx': 'f3b22071cefd749a8',
+            'start': start,
+            'num': num,
+            'date_restrict': date_restrict
+        }
+        payload.update(params)
+        return payload
+
+    # Function to make requests to Google Custom Search
+    def make_request(payload):
+        response = requests.get('https://www.googleapis.com/customsearch/v1', params=payload)
+        if response.status_code != 200:
+            raise Exception('Request Failed')
+        return response.json()
+
+    # Function to clean filenames
+    def clean_filename(filename):
+        filename = re.sub(r'[\\/*?:"<>|]', "", filename)
+        return filename
+
+    # Function to execute the main logic of Google Custom Search
+    def main(query, result_total=10):
+        items = []
+        remainder = result_total % 10
+        pages = (result_total // 10) + (1 if remainder > 0 else 0)
+
+        for i in range(pages):
+            start_index = i * 10 + 1
+            num_results = remainder if pages == i + 1 and remainder > 0 else 10
+            payload = build_payload(query, start=start_index, num=num_results)
+
+            response = make_request(payload)
+            if 'items' in response:
+                items.extend(response['items'])
+
+        query_string_clean = clean_filename(query)
+        df = pd.json_normalize(items)
+        df.to_excel(f'Google_Search_Result_{query_string_clean}.xlsx', index=False)
+
+    material_labels = session.get('material_labels', [])
+
+    print(material_labels)
+
+    if material_labels != ['No Recyclable Detected']:
+        if __name__ == '__main__':
+            KEY = 'AIzaSyBOFMdjxaL5J_LOhJQVg02hh7KpsGbogV4'
+            SEARCH_ENGINE_ID = 'f3b22071cefd749a8'
+            material_labels = session.get('material_labels', [])
+            total_results=20
+            search_query = 'Damaging effects of not recycling ' + ' '.join(material_labels)
+            main(search_query, total_results)
+
+            df = pd.read_excel('Google_Search_Result_'+f'{search_query}'+'.xlsx')
+        if 'title' in df.columns:
+            # Extract the column values into a list
+            titles_t = df['title'].tolist()
+
+        if 'link' in df.columns:
+            # Extract the column values into a list
+            titles_l = df['link'].tolist()
+
+        if 'title' in df.columns and 'link' in df.columns:
+            title_link_df = df[['title', 'link']]
+            title_link_df['title'] = title_link_df['title'].str.lower()  # Convert titles to lowercase
+            title_link_df = title_link_df[title_link_df['title'].str.contains('|'.join(material_labels).lower())]
+
+        titles = title_link_df['title'].tolist()
+        links = title_link_df['link'].tolist()
+
+        return (titles, "\n", links)
+
+
+    else:
+        return 'The object you displayed is either unable to be recycled, or cannot be recognized due to image quality'
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
