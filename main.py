@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, session, url_for, redirect, jsonify
-import json
 from google.cloud import vision
 import os
 import base64
