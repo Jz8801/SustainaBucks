@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, session, url_for, redirect, jsonify
 from google.cloud import vision
+
 import os
 import base64
 
@@ -35,23 +36,35 @@ def upload():
     else:
         return 'No image data received.', 400
     
+    recyclable = ['plastic', 'glass', 'metal', 'tin', 'aluminium', 'wood', 'paper', 'paperboard', 'textile']
+    
     response_label = client.label_detection(image=image)
     labels = response_label.label_annotations
+
+    material_labels = [label.description for label in labels 
+                       if any(material in label.description.lower() for material in recyclable)]
+    
+    if len(material_labels) == 0:
+        material_labels = ['No Recyclable Detected']
+
 
     response_logo = client.logo_detection(image=image)
     logos = response_logo.logo_annotations
 
-    response_text = client.text_detection(image=image)
-    texts = response_text.text_annotations
-
     results = {
-        'labels': [label.description for label in labels],
+        'labels': material_labels,
         'logos': [logo.description for logo in logos],
-        'text': [text.description for text in texts]
     }
 
-    return jsonify(results)
+    return render_template('uploadResults.html', labels=results['labels'], logos=results['logos'])
 
+@app.route('/recycle', methods=['POST','GET'])
+def recycle():
+    return render_template('mapDirection.html')
+
+@app.route('/dispose', methods=['POST','GET'])
+def dispose():
+    return
 
 if __name__ == '__main__':
     app.run(debug=True)
