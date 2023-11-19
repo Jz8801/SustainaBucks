@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session, url_for, redirect, jsonify
 from google.cloud import vision
-
+import requests
 import os
 import base64
 
@@ -60,7 +60,27 @@ def upload():
 
 @app.route('/recycle', methods=['POST','GET'])
 def recycle():
+    user_location = get_location()
     return render_template('mapDirection.html')
+
+def get_location():
+    api_key = 'AIzaSyAYJgLH4_JT5GnC-AMTEg27is4-y2NTsCk'
+
+    geolocation_data = {
+        'considerIp': 'true',
+    }
+
+    response = requests.post(
+        'https://www.googleapis.com/geolocation/v1/geolocate?key=' + api_key,
+        json=geolocation_data
+    )
+
+    if response.status_code == 200:
+        location = response.json().get('location')
+        return location
+    else:
+        return response.json().get('error'), response.status_code
+
 
 @app.route('/dispose', methods=['POST','GET'])
 def dispose():
