@@ -64,7 +64,7 @@ def recycle():
 
 @app.route('/dispose', methods=['POST','GET'])
 def dispose():
-    return
+    return render_template('dispose.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
