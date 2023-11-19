@@ -61,6 +61,7 @@ def upload():
 @app.route('/recycle', methods=['POST','GET'])
 def recycle():
     user_location = get_location()
+    print(user_location)
     return render_template('mapDirection.html')
 
 def get_location():
